@@ -11,24 +11,37 @@
     display: flex;
     flex-wrap: wrap;
     gap: .5rem;
-    justify-content: center;
-    align-items: center;
+    justify-content: left;
     padding: 1rem;
     flex-direction: column;
 }
 
 .flexContainer>* {
     padding: .5rem;
-    width: 100%;
     box-sizing: border-box;
 }
 
-@media screen and (min-width: 400px) {}
+@media screen and (min-width: 400px) {
+    .flexContainer>* {
+        width: 45%;
+        ;
+    }
+}
 
 @media screen and (min-width: 800px) {
     .flexContainer {
         flex-direction: row;
     }
+
+    .flexContainer>* {
+        width: 30%;
+        ;
+    }
 }
 
-@media screen and (min-width: 1200px) {}
+@media screen and (min-width: 1200px) {
+    .flexContainer>* {
+        width: 20%;
+        ;
+    }
+}
