@@ -3,7 +3,7 @@
     padding: 0;
 }
 
-imgContainer {
+.imgContainer {
     width: 100%;
 }
 
@@ -19,14 +19,11 @@ imgContainer {
 
 .flexContainer>* {
     padding: .5rem;
+    width: 100%;
     box-sizing: border-box;
 }
 
-@media screen and (min-width: 400px) {
-    .flexContainer>* {
-        width: 30%;
-    }
-}
+@media screen and (min-width: 400px) {}
 
 @media screen and (min-width: 800px) {
     .flexContainer {
