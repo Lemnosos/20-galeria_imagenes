@@ -7,6 +7,10 @@ img {
     width: 100%;
 }
 
+.oculto {
+    display: none;
+}
+
 .nav-bar {
     display: flex;
     justify-content: space-between;

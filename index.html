@@ -10,11 +10,6 @@
 
 <body>
 
-    <head>
-        <h2>Proyecto de galería de imágenes en grupo
-        </h2>
-    </head>
-
     <header class="nav-bar">
         <a href="#" class="logo">
             <img src="imagenes/pexels-logo.jpg">
@@ -55,9 +50,13 @@
         </article>
     </section>
 
-    <section id="seccionGaleria"></section>
+    <form id="formPaginacion" class="paginacion oculto">
+        <button name="previous" id="pagBtnAnterior">ANTERIOR</button>
+        <input type="number" name="nPagina" placeholder="Introducir Pagina">
+        <button name="next" id="pagBtnSiguiente">SIGUIENTE</button>
+    </form>
 
-    <section id="paginacion" class="paginacion"></section>
+    <section id="seccionGaleria"></section>
 
     <script src="js/main.js"></script>
 
