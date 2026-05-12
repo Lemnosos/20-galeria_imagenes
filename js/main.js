@@ -23,6 +23,13 @@ let figura3 = document.querySelector('#figura3');
  */
 let figuras = [figura1, figura2, figura3];
 
+// const catGeneral;
+
+
+const key = "I1dugFYldajKvI1gCSdWrV5ftv1EP5QoeqogsQrz5Nlhll2UItZJAvPR";
+
+let figura1, figura2, figura3;
+
 /**
  * Contenedor principal donde se renderizan las imágenes
  * @type {HTMLElement}
@@ -30,6 +37,7 @@ let figuras = [figura1, figura2, figura3];
 const seccionPrincipal = document.querySelector("#seccionPrincipal");
 const seccionGaleria = document.querySelector("#seccionGaleria");
 const formularioPaginacion = document.querySelector("formPaginacion")
+
 
 
 /**
@@ -126,6 +134,48 @@ formularioPaginacion.addEventListener("submit", (ev) => {
  * @param {string} categoria - Categoría de búsqueda
  * @returns {Promise<RespuestaPexels>}
  */
+const form = document.getElementById("formBuscador")
+const input = document.getElementById("inputBuscador")
+
+form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    const categoria = input.value;
+
+    pintarGaleriaPrincipal(categoria);
+});
+
+form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    const categoria = input.value.trim();
+
+    pintarGaleriaPrincipal(categoria);
+});
+
+const pintarGaleriaPrincipal = async (categoria) => {
+
+    const response = await fetch(
+        `https://api.pexels.com/v1/search?query=${categoria}&per_page=9`,
+        {
+            headers: {
+                Authorization: key,
+            },
+        }
+    );
+
+    const data = await response.json();
+
+    console.log(data.photos);
+
+
+};
+
+
+
+
+
+//buscar imagen aleatoria
 const recuperarImagenAleatoria = async (categoria) => {
     try {
         const res = await fetch(`https://api.pexels.com/v1/search?query=${categoria}&per_page=1`, {
@@ -318,7 +368,9 @@ const pintarPaginacion = async (pagina, categoria) => {
 
 
 
+
 /**
  * Inicializa la aplicación cargando las imágenes principales
  */
 rellenarImagenesPrincipales();
+
