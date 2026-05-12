@@ -114,13 +114,6 @@ document.addEventListener("click", async (ev) => {
     }
 });
 
-formularioPaginacion.addEventListener("click", (ev) => {
-    ev.preventDefault()
-    console.log(ev.target)
-    categoriaGlobal = input.value.trim();
-    pintarGaleriaPrincipal(categoriaGlobal);
-});
-
 siguientePaginacion.addEventListener("click", async (ev) => {
     console.log(ev.target)
     try {
@@ -129,6 +122,25 @@ siguientePaginacion.addEventListener("click", async (ev) => {
             pagina = numeroBotones;
         const dataArray = await recuperarImagenes(categoriaGlobal, pagina)
         console.log("siguientePaginacion", dataArray, pagina)
+
+        dataArray.forEach((data, i) => {
+            pintarConCategoria(seccionGaleria, dataArray[i], categoriaGlobal);
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+
+})
+
+anteriorPaginacion.addEventListener("click", async (ev) => {
+    console.log(ev.target)
+    try {
+        pagina--;
+        if (pagina < 1)
+            pagina = 1;
+        const dataArray = await recuperarImagenes(categoriaGlobal, pagina)
+        console.log("anteriorPaginacion", dataArray, pagina)
 
         dataArray.forEach((data, i) => {
             pintarConCategoria(seccionGaleria, dataArray[i], categoriaGlobal);
@@ -149,22 +161,14 @@ siguientePaginacion.addEventListener("click", async (ev) => {
  */
 
 // Search bar function
-const form = document.getElementById("formBuscador")
-const input = document.getElementById("inputBuscador")
+const formBuscador = document.getElementById("formBuscador")
+const inputBuscador = document.getElementById("inputBuscador")
 const resultadoBusqueda = document.getElementById("resultadoBuscador")
 
-form.addEventListener("submit", (ev) => {
+formBuscador.addEventListener("submit", (ev) => {
     ev.preventDefault();
 
-    const categoria = input.value;
-
-    pintarGaleriaPrincipal(categoria);
-});
-
-form.addEventListener("submit", (ev) => {
-    ev.preventDefault();
-
-    const categoria = input.value.trim();
+    const categoria = inputBuscador.value;
 
     pintarGaleriaPrincipal(categoria);
 });
@@ -194,7 +198,8 @@ const pintarGaleriaPrincipal = async (categoria) => {
 //buscar imagen aleatoria
 const recuperarImagenAleatoria = async ({ cat }) => {
     try {
-        const res = await fetch(`${urlBase}/search?query=${cat}&per_page=1`, {
+        let url = `${urlBase}/search?query=${cat}&per_page=1`
+        const res = await fetch(url, {
             headers: {
                 Authorization: key,
             }
@@ -224,9 +229,11 @@ const recuperarImagenAleatoria = async ({ cat }) => {
  * @returns {Promise<RespuestaPexels>}
  */
 const recuperarImagenes = async (categoria, pagina) => {
-    console.log(categoria, pagina, imagenPorPagina)
+    console.log("recuperar imagenes:", categoria, pagina, imagenPorPagina)
     try {
-        const res = await fetch(`${urlBase}/search?query=${categoria}&per_page=${imagenPorPagina}&page=${pagina}`, {
+        console.log("recuperar imagenes busca:", `${urlBase}/search?query=${categoria}&per_page=${imagenPorPagina}&page=${pagina}`)
+        let url = `${urlBase}/search?query=${categoria}&per_page=${imagenPorPagina}&page=${pagina}`
+        const res = await fetch(url, {
             headers: {
                 Authorization: key,
             }
@@ -266,15 +273,15 @@ const pintarConCategoria = (figura, foto, categoria) => {
     const img = document.createElement("img");
     img.src = foto.photos[0].src.medium;
     img.alt = foto.photos[0].alt;
-    img.dataset.categoria = categoriaGlobal
+    img.dataset.categoria = categoria
 
     const p = document.createElement('p');
     p.innerText = `Descripción de la imagen aleatoria de la categoria ${categoria}`;
-    p.dataset.categoria = categoriaGlobal
+    p.dataset.categoria = categoria
 
     fragmento.append(img, p);
     figura.append(fragmento);
-    figura.dataset.categoria = categoriaGlobal
+    figura.dataset.categoria = categoria
 };
 
 /**
@@ -287,6 +294,7 @@ const pintarGaleria = (figura, foto, categoria) => {
     if (!figura) return;
 
     const div = document.createElement('div');
+    div.dataset.categoria = categoriaGlobal;
 
     const divImg = document.createElement('div');
     divImg.classList.add('imgContainer');
@@ -295,9 +303,11 @@ const pintarGaleria = (figura, foto, categoria) => {
     const img = document.createElement("img");
     img.src = foto.src.medium;
     img.alt = foto.alt;
+    img.dataset.categoria = categoriaGlobal;
 
     const p = document.createElement("p");
     p.textContent = foto.alt;
+    p.dataset.categoria = categoriaGlobal;
 
 
 
@@ -326,7 +336,7 @@ const rellenarImagenesPrincipales = async () => {
         );
 
         dataArray.forEach((data, i) => {
-            pintarConCategoria(figuras[i], dataArray[i], categoriaGlobal);
+            pintarConCategoria(figuras[i], dataArray[i], categorias[i].cat);
         });
 
     } catch (error) {
@@ -338,7 +348,6 @@ const obtenerInputPaginado = () => {
     let input = document.querySelector("#inputPaginacion")
     let texto = input.value;
     return texto
-
 }
 
 //funcion de pintado de la paginacion
@@ -346,12 +355,9 @@ const pintarPaginacion = async (data) => {
     numeroBotones = Math.ceil(data.total_results / imagenPorPagina)
     console.log("nbotones", numeroBotones)
     formularioPaginacion.classList.remove("oculto")
-    console.log(data)
+    console.log("en pontar paginacion, data vale:", data)
     anteriorPaginacion.dataset.url = data.prev_page || "";
     siguientePaginacion.dataset.url = data.next_page || "";
-
-
-
 }
 
 
