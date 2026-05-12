@@ -10,59 +10,42 @@
 
 <body>
 
-    <head>
-        <h2>Proyecto de galería de imágenes en grupo
-        </h2>
-    </head>
+    <header>
+        <h2>Proyecto de galería de imágenes en grupo</h2>
+    </header>
 
     <header class="nav-bar">
         <a href="#" class="logo">
-            <img src="imagenes/pexels-logo.jpg">
+            <img src="imagenes/pexels-logo.jpg" alt="Logo Pexels">
         </a>
+
         <form class="formContainer" id="formBuscador">
             <input class="inputContainer" id="inputBuscador" type="search" placeholder="Buscar fotos">
-            <button class="btnnBuscador" type="submit" id="btnBuscador">Buscar</button>
+            <button class="btnnBuscador" type="submit">Buscar</button>
         </form>
     </header>
-    <div id="resultadoBuscador"></div>
+
     <section class="flexContainer" id="seccionPrincipal">
         <article>
-            <figure id="figura1">
-                <div class="imageContainer">
-                    <img src="ruta/de/tu/imagen.jpg" alt="Imagen aleatoria de la categoria ciencia ficcion">
-                </div>
-                <figcaption>Figura 1: Esta es la descripción de la imagen aleatoria de la categoria ciencia ficcion.
-                </figcaption>
-            </figure>
+            <figure id="figura1"></figure>
         </article>
         <article>
-            <figure id="figura2">
-                <div class="imageContainer">
-                    <img src="ruta/de/tu/imagen.jpg" alt="Imagen aleatoria de la categoria espacio">
-                </div>
-                <figcaption>Figura 2: Esta es la descripción de la imagen aleatoria de la categoria espacio.
-                </figcaption>
-            </figure>
+            <figure id="figura2"></figure>
         </article>
         <article>
-            <figure id="figura3">
-                <div class="imageContainer">
-                    <img src="ruta/de/tu/imagen.jpg" alt="Imagen aleatoria de la categoria ejército">
-                </div>
-                <figcaption>Figura 3: Esta es la descripción de la imagen aleatoria de la categoria ejército.
-                </figcaption>
-            </figure>
+            <figure id="figura3"></figure>
         </article>
     </section>
 
     <form id="formPaginacion" class="paginacion oculto">
-        <button name="previous" id="pagBtnAnterior">ANTERIOR</button>
-        <input type="number" name="nPagina" placeholder="Introducir Pagina">
-        <button name="next" id="pagBtnSiguiente">SIGUIENTE</button>
+        <button type="button" id="pagBtnAnterior">ANTERIOR</button>
+
+        <input type="number" id="inputPaginacion" name="nPagina" readonly>
+
+        <button type="button" id="pagBtnSiguiente">SIGUIENTE</button>
     </form>
 
-    <section id="seccionGaleria">
-    </section>
+    <section id="seccionGaleria" class="seccionGaleria flexContainer"></section>
 
     <section id="seccionFavoritos" class="flexContainer">
         <h2>Mis Favoritos</h2>
