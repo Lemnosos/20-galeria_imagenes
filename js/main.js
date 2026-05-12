@@ -28,6 +28,9 @@ let figuras = [figura1, figura2, figura3];
  * @type {HTMLElement}
  */
 const seccionPrincipal = document.querySelector("#seccionPrincipal");
+const seccionGaleria = document.querySelector("#seccionGaleria");
+const formularioPaginacion = document.querySelector("formPaginacion")
+
 
 /**
  * Fragmento reutilizable para inserciones eficientes en el DOM
@@ -51,8 +54,10 @@ let numeroBotones;
  * Número de imágenes por página
  * @type {number}
  */
-let imagenPorPagina = 15;
+let imagenPorPagina = 9;
+let pagina = 1;
 
+let paginacion = document.querySelector("#paginacion")
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -85,23 +90,35 @@ let imagenPorPagina = 15;
 document.addEventListener("click", async (ev) => {
     try {
         const figura = ev.target.closest('[id^="figura"]');
-        if (!figura) return;
+        if (figura) {
+            console.log('target', ev.target)
+            const cat = figura.childNodes[0].dataset.categoria;
 
-        const cat = figura.childNodes[0].dataset.categoria;
+            const res = await recuperarImagenes(cat, 1);
+            const imagenes = res.photos;
 
-        const res = await recuperarImagenes(cat);
-        const imagenes = res.photos;
+            seccionPrincipal.innerHTML = "";
 
-        seccionPrincipal.innerHTML = "";
+            imagenes.forEach((imagen) => {
+                pintarGaleria(seccionPrincipal, imagen, cat);
+            });
 
-        imagenes.forEach((imagen) => {
-            pintarSinCategoria(seccionPrincipal, imagen);
-        });
+            pintarPaginacion(res.page, cat);
+        }
 
     } catch (error) {
         console.log("Error al leer las nuevas fotos", error);
     }
 });
+
+formularioPaginacion.addEventListener("submit", (ev) => {
+    try {
+        ev.preventDefault();
+        console.log("formPaginacion", ev.target)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 /**
  * Recupera una imagen aleatoria de una categoría
@@ -135,6 +152,40 @@ const recuperarImagenAleatoria = async (categoria) => {
 };
 
 /**
+ * Recupera un conjunto de imágenes de una categoría concreta
+ * 
+ * @param {string} categoria - Categoría de búsqueda
+ * @returns {Promise<RespuestaPexels>}
+ */
+const recuperarImagenes = async (categoria, pagina) => {
+    console.log(categoria, pagina, imagenPorPagina)
+    try {
+        const res = await fetch(`https://api.pexels.com/v1/search?query=${categoria}&per_page=${imagenPorPagina}&page=${pagina}`, {
+            headers: {
+                Authorization: key,
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error HTTP: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        numeroBotones = Math.ceil(data.total_results / imagenPorPagina);
+
+        if (!data.photos || data.photos.length === 0) {
+            throw new Error("No hay fotos en la respuesta");
+        }
+
+        return data;
+
+    } catch (error) {
+        throw new Error(`Error al buscar la imagen: ${error.message}`);
+    }
+};
+
+/**
  * Pinta una imagen con categoría dentro de una figura principal
  * 
  * @param {HTMLElement} figura - Contenedor destino
@@ -142,6 +193,7 @@ const recuperarImagenAleatoria = async (categoria) => {
  * @param {string} categoria - Categoría asociada
  */
 const pintarConCategoria = (figura, foto, categoria) => {
+    console.log('pintarConCategoria', foto)
     if (!figura) return;
 
     figura.innerHTML = "";
@@ -169,13 +221,14 @@ const pintarConCategoria = (figura, foto, categoria) => {
  * @param {HTMLElement} figura - Contenedor destino
  * @param {Imagen} foto - Objeto de imagen
  */
-const pintarSinCategoria = (figura, foto) => {
+const pintarGaleria = (figura, foto, categoria) => {
     if (!figura) return;
 
     const div = document.createElement('div');
 
     const divImg = document.createElement('div');
     divImg.classList.add('imgContainer');
+    divImg.dataset.categoria = categoria;
 
     const img = document.createElement("img");
     img.src = foto.src.medium;
@@ -210,38 +263,60 @@ const rellenarImagenesPrincipales = async () => {
     }
 };
 
-/**
- * Recupera un conjunto de imágenes de una categoría concreta
- * 
- * @param {string} categoria - Categoría de búsqueda
- * @returns {Promise<RespuestaPexels>}
- */
-const recuperarImagenes = async (categoria) => {
-    try {
-        const res = await fetch(`https://api.pexels.com/v1/search?query=${categoria}&per_page=${imagenPorPagina}&page=1`, {
-            headers: {
-                Authorization: key,
-            }
-        });
+const obtenerInputPaginado = () => {
+    let input = document.querySelector("#inputPaginacion")
+    let texto = input.value;
+    return texto
 
-        if (!res.ok) {
-            throw new Error(`Error HTTP: ${res.status}`);
-        }
+}
 
-        const data = await res.json();
+//funcion de pintado de la paginacion
+const pintarPaginacion = async (pagina, categoria) => {
+    console.log("nbotones", numeroBotones)
+    if (numeroBotones != null) {
+        paginacion.innerHTML = ""
 
-        numeroBotones = Math.ceil(data.total_results / imagenPorPagina);
+        let p = document.createElement('P')
+        p.innerText = `Se esta mostrando la pagina ${pagina} de ${numeroBotones}`
 
-        if (!data.photos || data.photos.length === 0) {
-            throw new Error("No hay fotos en la respuesta");
-        }
+        const form = document.createElement("form");
+        form.id = "formPaginacion"
 
-        return data;
+        // LABEL
+        const label = document.createElement("label");
+        label.textContent = "Ir a página:";
+        label.setAttribute("for", "inputPaginacion");
 
-    } catch (error) {
-        throw new Error(`Error al buscar la imagen: ${error.message}`);
+        // INPUT
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "inputPaginacion";
+        input.id = "inputPaginacion";
+
+        // BOTÓN
+        const boton = document.createElement("button");
+        boton.type = "submit";
+        boton.name = "submitPaginacion";
+        boton.textContent = "Enviar";
+        boton.dataset.categoria = categoria;
+
+        // LABEL
+        const label2 = document.createElement("label");
+        label2.textContent = `de ${numeroBotones}`;
+        label2.setAttribute("for", "inputPaginacion");
+
+
+        // Montaje
+        form.append(label, input, label2, boton);
+
+        paginacion.append(p, form)
     }
-};
+}
+
+
+
+
+
 
 /**
  * Inicializa la aplicación cargando las imágenes principales
