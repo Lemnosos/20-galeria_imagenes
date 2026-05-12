@@ -25,11 +25,6 @@ let figuras = [figura1, figura2, figura3];
 
 // const catGeneral;
 
-
-const key = "I1dugFYldajKvI1gCSdWrV5ftv1EP5QoeqogsQrz5Nlhll2UItZJAvPR";
-
-let figura1, figura2, figura3;
-
 /**
  * Contenedor principal donde se renderizan las imágenes
  * @type {HTMLElement}
@@ -119,7 +114,7 @@ document.addEventListener("click", async (ev) => {
     }
 });
 
-formularioPaginacion.addEventListener("submit", (ev) => {
+formularioPaginacion?.addEventListener("submit", (ev) => {
     try {
         ev.preventDefault();
         console.log("formPaginacion", ev.target)
