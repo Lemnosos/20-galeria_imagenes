@@ -140,6 +140,35 @@ siguientePaginacion.addEventListener("click", async (ev) => {
 
 })
 
+
+/**
+ * Recupera una imagen aleatoria de una categoría
+ * 
+ * @param {string} categoria - Categoría de búsqueda
+ * @returns {Promise<RespuestaPexels>}
+ */
+
+// Search bar function
+const form = document.getElementById("formBuscador")
+const input = document.getElementById("inputBuscador")
+const resultadoBusqueda = document.getElementById("resultadoBuscador")
+
+form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    const categoria = input.value;
+
+    pintarGaleriaPrincipal(categoria);
+});
+
+form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    const categoria = input.value.trim();
+
+    pintarGaleriaPrincipal(categoria);
+});
+
 const pintarGaleriaPrincipal = async (categoria) => {
 
     const response = await fetch(
@@ -161,7 +190,6 @@ const pintarGaleriaPrincipal = async (categoria) => {
     })
 
 };
-
 
 //buscar imagen aleatoria
 const recuperarImagenAleatoria = async ({ cat }) => {
@@ -271,8 +299,17 @@ const pintarGaleria = (figura, foto, categoria) => {
     const p = document.createElement("p");
     p.textContent = foto.alt;
 
+
+
+    // para favoritos
+    const btn = document.createElement("button");
+    btn.innerText = "FAV";
+    btn.onclick = () => toggleFav({ id: foto.id });
+
+
     divImg.append(img);
-    div.append(divImg, p);
+    div.append(divImg, p, btn); // Asegúrate de añadir el botón al div
+
 
     figura.append(div);
 };
@@ -318,7 +355,68 @@ const pintarPaginacion = async (data) => {
 }
 
 
+// Favorite
 
+const getFavs = () => JSON.parse(localStorage.getItem('favs')) || [];
+
+const toggleFav = (foto) => {
+    let favs = getFavs();
+    const exists = favs.find(f => f.id === foto.id);
+
+    if (!exists) {
+        favs.push(foto);
+        localStorage.setItem('favs', JSON.stringify(favs));
+        renderFavs();
+    }
+}
+// Si ya existe lo quita, si no, lo añade
+//     favs = exists ? favs.filter(f => f.id !== foto.id) : [...favs, foto];
+
+//     localStorage.setItem('favs', JSON.stringify(favs));
+//     renderFavs(); 
+//     // Actualiza la vista de favoritos
+// };
+const eliminarFav = (id) => {
+    let favs = getFavs()
+    favs = favs.filter(f => f.id !== id);
+    localStorage.setItem('favs', JSON.stringify(favs));
+
+    renderFavs();
+};
+const renderFavs = () => {
+    const contenedor = document.querySelector("#contenedorFavoritos");
+    const favs = getFavs();
+
+    contenedor.innerHTML = "";
+
+    favs.forEach(foto => {
+        const div = document.createElement("div");
+        const img = document.createElement("img");
+        img.src = foto.src;
+        img.alt = foto.alt;
+
+
+        const p = document.createElement("p");
+        p.textContent = foto.alt;
+
+
+        const btnEliminar = document.createElement("button");
+        btnEliminar.innerText = "DEL FAV";
+
+        btnEliminar.onclick = () => {
+            eliminarFav(foto.id);
+
+        };
+
+        div.append(img, p, btnEliminar);
+        contenedor.append(div);
+
+    })
+
+    // Aquí puedes decidir si quieres borrarlos o pintarlos en otro lado
+    console.log("Tus favoritos actuales:", favs);
+};
+renderFavs();
 
 
 

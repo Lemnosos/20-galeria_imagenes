@@ -10,6 +10,11 @@
 
 <body>
 
+    <head>
+        <h2>Proyecto de galería de imágenes en grupo
+        </h2>
+    </head>
+
     <header class="nav-bar">
         <a href="#" class="logo">
             <img src="imagenes/pexels-logo.jpg">
@@ -19,7 +24,7 @@
             <button class="btnnBuscador" type="submit" id="btnBuscador">Buscar</button>
         </form>
     </header>
-
+    <div id="resultadoBuscador"></div>
     <section class="flexContainer" id="seccionPrincipal">
         <article>
             <figure id="figura1">
@@ -56,7 +61,13 @@
         <button name="next" id="pagBtnSiguiente">SIGUIENTE</button>
     </form>
 
-    <section id="seccionGaleria"></section>
+    <section id="seccionGaleria">
+    </section>
+
+    <section id="seccionFavoritos" class="flexContainer">
+        <h2>Mis Favoritos</h2>
+        <div id="contenedorFavoritos" class="flexContainer"></div>
+    </section>
 
     <script src="js/main.js"></script>
 
