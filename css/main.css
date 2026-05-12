@@ -34,7 +34,7 @@ img {
 
 .inputContainer {
     padding: 10px;
-    width: 70%;
+    width: 50px;
 }
 
 .btnnBuscador {
@@ -62,7 +62,6 @@ img {
     padding: .5rem;
     box-sizing: border-box;
 }
-
 @media screen and (min-width: 400px) {
     .flexContainer>* {
         width: 45%;
@@ -87,3 +86,5 @@ img {
         ;
     }
 }
+
+
