@@ -1,7 +1,7 @@
-const catGeneral;
+// const catGeneral;
 
 
-const key = I1dugFYldajKvI1gCSdWrV5ftv1EP5QoeqogsQrz5Nlhll2UItZJAvPR;
+const key = "I1dugFYldajKvI1gCSdWrV5ftv1EP5QoeqogsQrz5Nlhll2UItZJAvPR";
 
 let figura1, figura2, figura3;
 
@@ -10,25 +10,41 @@ const categorias = ["sci_fi", "videogames", "army"]
 
 const form = document.getElementById("formBuscador")
 const input = document.getElementById("inputBuscador")
-const button = document.getElementById("btnBuscador")
 
-form.addEventListener("submit", (event)=>{
-event.preventDefault();
-const buscarTexto = input.value;
+form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
 
-    fetchImages(buscarTexto);
-})
+    const categoria = input.value;
+
+    pintarGaleriaPrincipal(categoria);
+});
+
+form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    const categoria = input.value.trim();
+
+    pintarGaleriaPrincipal(categoria);
+});
+
+const pintarGaleriaPrincipal = async (categoria) => {
+
+    const response = await fetch(
+        `https://api.pexels.com/v1/search?query=${categoria}&per_page=9`,
+        {
+            headers: {
+                Authorization: key,
+            },
+        }
+    );
+
+    const data = await response.json();
+
+    console.log(data.photos);
 
 
-const data = await response.json();
+};
 
-adfffd.addEventListener(`submit`,(ev)=>{
-    ev.preventDefault()
-    categoria = ev.target.input.value
-
-    pintarGaleriaPrincipal()
-
-})
 
 
 
