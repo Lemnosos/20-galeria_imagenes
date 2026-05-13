@@ -44,6 +44,8 @@ document.addEventListener("click", (ev) => {
         pagina = 1;
         pintarGaleriaPrincipal(categoriaGlobal);
     }
+
+
 });
 
 siguientePaginacion.addEventListener("click", () => cambiarPagina(1));
